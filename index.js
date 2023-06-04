@@ -43,9 +43,7 @@ async function run() {
 
     })
 // bookings
-    app.get('/bookings',async(req,res)=>{ 
-
-     
+    app.get('/bookings',async(req,res)=>{  
       let query ={};
       if (req.query?.email) {
         query={email:req.query.email}
@@ -54,11 +52,33 @@ async function run() {
       res.send(result)
      
     })
+    
     app.post('/bookings',async(req,res)=>{
       const booking =req.body;
       console.log(booking);
       const result = await bookingsCollection.insertOne(booking)
       res.send(result)
+    })
+    app.patch('/bookings/:id',async(req,res)=>{
+      const id =req.params.id;
+      const query={_id:new ObjectId(id)};
+      const updateBooking =req.body;
+      console.log(updateBooking);
+      const updateDoc = {
+        $set: {
+          status: updateBooking.status
+        },
+      };
+      const result =await bookingsCollection.updateOne(query,updateDoc)
+      res.send(result)
+
+    })
+    app.delete('/bookings/:id',async(req,res)=>{
+      const id =req.params.id;
+      const query ={_id: new ObjectId(id)}
+      const result =await bookingsCollection.deleteOne(query);
+      res.send(result)
+   
     })
 
     // Send a ping to confirm a successful connection
